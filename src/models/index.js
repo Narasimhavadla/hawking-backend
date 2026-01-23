@@ -5,12 +5,14 @@ const createUserModels = require('./userModel')
 const parentTest = require('../models/parentTestModel')
 const studentTestModel = require('../models/studentTestModel')
 const examModels = require('../models/exam')
+const teacherModels = require('./teacher.model')
 
 const studentModel = createUserModel(sequelize);
 const userModel = createUserModels(sequelize);
 const parentTestModel = parentTest(sequelize)
 const stuTestModel = studentTestModel(sequelize)
 const examModel = examModels(sequelize)
+const teacherModel = teacherModels(sequelize)
 
 
 
@@ -29,4 +31,5 @@ module.exports = {
     parentTestModel,
     stuTestModel,
     examModel,
+    teacherModel,
 }

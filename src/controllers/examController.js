@@ -35,6 +35,35 @@ const examController = {
         }
         },
 
+    
+        getExamCount: async (req, res) => {
+        try {
+            const examScheudle = await req.examModel.findAll();
+
+            const totalExams = examScheudle.length;
+
+            const activeExams = await req.examModel.count({
+            where: { status: "active" },
+            });
+
+            const inactiveExams = await req.examModel.count({
+            where: { status: "inactive" },
+            });
+
+            res.status(200).send({
+            status: true,
+            message: "Successfully fetched",
+            meta: {
+                total_examSchedule: totalExams,
+                activeExams,
+                inactiveExams,
+            },
+            });
+        } catch (err) {
+            catchError(res, err, "Failed to get Data");
+        }
+        },
+
 
     //create exam schedule 
 
