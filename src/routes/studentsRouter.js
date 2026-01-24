@@ -8,6 +8,8 @@ router.get("/student-pie", studentController.getStudentsPieChart);
 /* LINE CHART */
 router.get("/student-line", studentController.getStudentsLastMonth);
 
+router.get("/dashboard-data", studentController.getDashboardDetails);
+
 
 router.get("/student", studentController.getStudents);
 router.get("/student/:id", studentController.getStudent);

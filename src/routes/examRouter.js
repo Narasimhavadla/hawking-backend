@@ -5,7 +5,7 @@ const router = express.Router()
 const examScheduleController = require('../controllers/examController')
 
 
-router.get('/exam-schedule/count',examScheduleController.getExamCount)
+// router.get('/exam-schedule/count',examScheduleController.getExamCount)
 
 
 router.get('/exam-schedule',examScheduleController.getExamSchedule)

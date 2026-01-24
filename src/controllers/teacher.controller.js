@@ -49,25 +49,26 @@ const TeacherController = {
             });
             }
         },
-        getTeachersCount: async (req, res) => {
-                try {
-                    // Efficient way to get total count
-                    const totalTeachers = await req.teacherModel.count();
+        // getTeachersCount: async (req, res) => {
+        //         try {
+        //             // Efficient way to get total count
+        //             const totalTeachers = await req.teacherModel.count();
 
-                    res.status(200).json({
-                        status: true,
-                        meta: { totalTeachers }
-                    });
-                } catch (error) {
-                    res.status(500).json({
-                        status: false,
-                        message: error.message,
-                    });
-                }
-            },
+        //             res.status(200).json({
+        //                 status: true,
+        //                 meta: { totalTeachers }
+        //             });
+        //         } catch (error) {
+        //             res.status(500).json({
+        //                 status: false,
+        //                 message: error.message,
+        //             });
+        //         }
+        //     },
 
 
   // ✅ READ ONE
+  
   getTeacherById: async (req, res) => {
     try {
       const teacher = await req.teacherModel.findByPk(req.params.id);

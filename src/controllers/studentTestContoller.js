@@ -19,8 +19,7 @@ const studentTestinomials = {
             })
         }
     },
-    // get testinomial by id 
-    //api/v1/student-testinoials/:id
+  
 
     getStudTestById : async (req,res) =>{
 
@@ -142,7 +141,71 @@ const studentTestinomials = {
                 message : "Failed to Delete"
             })
         }
-    }
+    },
+
+        toggleStudentTestimonialPublish: async (req, res) => {
+            try {
+            const testimonial = await req.stuTestModel.findByPk(req.params.id);
+
+            if (!testimonial) {
+                return res.status(404).send({
+                status: false,
+                message: "Testimonial not found",
+                });
+            }
+
+            // If publishing → check limit
+            if (!testimonial.isPublished) {
+                const count = await req.stuTestModel.count({
+                where: { isPublished: true },
+                });
+
+                if (count >= 4) {
+                return res.status(400).send({
+                    status: false,
+                    message: "Only 4 student testimonials can be published",
+                });
+                }
+            }
+
+            testimonial.isPublished = !testimonial.isPublished;
+            await testimonial.save();
+
+            res.status(200).send({
+                status: true,
+                message: "Status updated",
+                data: testimonial,
+            });
+            } catch (err) {
+            res.status(500).send({
+                status: false,
+                message: "Failed to toggle testimonial",
+            });
+            }
+        },
+
+        getPublishedStudentTestimonials: async (req, res) => {
+            try {
+            const testimonials = await req.stuTestModel.findAll({
+                where: { isPublished: true },
+                limit: 4,
+                order: [["updatedAt", "DESC"]],
+            });
+
+            res.status(200).send({
+                status: true,
+                data: testimonials,
+            });
+            } catch (err) {
+            res.status(500).send({
+                status: false,
+                message: "Failed to fetch student testimonials",
+            });
+            }
+        },
+
+
+
 
 
 
