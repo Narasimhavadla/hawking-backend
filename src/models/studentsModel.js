@@ -50,13 +50,22 @@ const createStudent = (sequelize) => {
         allowNull : false
       },
       pincode : {
-        type : DataTypes.INTEGER,
+        type : DataTypes.STRING,
         allowNull : false
       },
       Status : {
         type : DataTypes.STRING,
         allowNull : false
-      }
+      },
+      examId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      teacherId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
     },
     {
       timestamps: true,

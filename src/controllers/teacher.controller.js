@@ -1,34 +1,110 @@
+const bcrypt = require("bcrypt");
+const sendTeacherCredentials = require("../utils/sendEmail");
+
+const DEFAULT_PASSWORD = "welcome@123";
+
+
 const TeacherController = {
 
-        createTeacher: async (req, res) => {
-        try {
-            const teacher = await req.teacherModel.create(req.body);
+        // createTeacher: async (req, res) => {
+        // try {
+        //     const teacher = await req.teacherModel.create(req.body);
 
-            res.status(201).json({
-            status: true,
-            message: "Teacher registered successfully",
-            data: teacher,
-            });
+        //     res.status(201).json({
+        //     status: true,
+        //     message: "Teacher registered successfully",
+        //     data: teacher,
+        //     });
 
-        } catch (error) {
+        // } catch (error) {
 
 
-            // 🔐 Duplicate email handling
-            if (error.name === "SequelizeUniqueConstraintError") {
-            return res.status(409).json({
-                status: false,
-                message: "Email already exists",
+        //     // 🔐 Duplicate email handling
+        //     if (error.name === "SequelizeUniqueConstraintError") {
+        //     return res.status(409).json({
+        //         status: false,
+        //         message: "Email already exists",
                 
-            });
-            }
+        //     });
+        //     }
 
-            res.status(500).json({
-            status: false,
-            message: "Internal server error",
-            error: error.message, 
-            });
-        }
-        },
+        //     res.status(500).json({
+        //     status: false,
+        //     message: "Internal server error",
+        //     error: error.message, 
+        //     });
+        // }
+        // },
+
+
+
+        createTeacher: async (req, res) => {
+            try {
+              const {
+                name,
+                email,
+                school,
+                qualification,
+                phone,
+                teachingType,
+                upiId,
+                classFrom,
+                classTo,
+              } = req.body;
+
+
+              const teacher = await req.teacherModel.create({
+                name,
+                email,
+                school,
+                qualification,
+                phone,
+                teachingType,
+                upiId,
+                teachingFrom: classFrom,
+                teachingTo: classTo,
+                role: "teacher",
+              });
+              // 2️⃣ Create User (Teacher Login)
+              const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10);
+
+              await req.userModel.create({
+                username: email,
+                password: hashedPassword,
+                role: "teacher",
+              });
+              // 3️⃣ Send Email
+              await sendTeacherCredentials({
+                toEmail: email,
+                name,
+                username: email,
+                password: DEFAULT_PASSWORD,
+              });
+
+              res.status(201).json({
+                status: true,
+                message: "Teacher registered & credentials sent via email",
+                data: teacher,
+              });
+              } catch (error) {
+
+                  if (error.name === "SequelizeUniqueConstraintError") {
+                    return res.status(409).json({
+                      status: false,
+                      message: "Email already exists",
+                    });
+                  }
+                    res.status(500).json({
+                    status: false,
+                    message: "Internal server error",
+                    error: error.message,
+                  });
+                }
+              },
+
+
+
+
 
 
         getAllTeachers: async (req, res) => {
