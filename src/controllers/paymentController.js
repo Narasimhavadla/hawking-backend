@@ -1,23 +1,26 @@
 const razorpay = require("../config/razorpay");
 const crypto = require("crypto");
 
+// CREATE ORDER
 exports.createOrder = async (req, res) => {
   try {
     const { amount } = req.body;
 
     const order = await razorpay.orders.create({
-      amount: amount * 100,
+      amount: amount * 100, // convert to paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       payment_capture: 1,
     });
 
-    res.json(order);
+    res.status(200).json(order);
   } catch (error) {
+    console.error("Create Order Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
+// VERIFY PAYMENT
 exports.verifyPayment = async (req, res) => {
   try {
     const {
@@ -31,7 +34,7 @@ exports.verifyPayment = async (req, res) => {
 
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(body)
+      .update(body.toString())
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
@@ -46,8 +49,9 @@ exports.verifyPayment = async (req, res) => {
       status: "SUCCESS",
     });
 
-    res.json({ success: true });
+    res.status(200).json({ success: true });
   } catch (err) {
+    console.error("Verify Error:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };

@@ -5,22 +5,21 @@ const cors = require('cors');
 dotenv.config();
 
 const studentRouter = require('./src/routes/studentsRouter');
-const { studentModel, initDb,userModel,parentTestModel,stuTestModel,examModel,teacherModel,Payment } = require('./src/models');
-// const pdfRouter = require('./src/routes/pdfRouter');
+const { studentModel, initDb, userModel, parentTestModel, stuTestModel, examModel, teacherModel, Payment } = require('./src/models');
 
-const authRouter = require('./src/routes/authRouter')
-const parentTesti = require('./src/routes/parentTestRouter')
-const studentTestRouter = require('./src/routes/studentTestRouter')
-const examRouter = require('./src/routes/examRouter')
-const teacherRouter = require('./src/routes/teacher.routes')
-const paymentRoutes  = require('./src/routes/paymentRoutes')
+const authRouter = require('./src/routes/authRouter');
+const parentTesti = require('./src/routes/parentTestRouter');
+const studentTestRouter = require('./src/routes/studentTestRouter');
+const examRouter = require('./src/routes/examRouter');
+const teacherRouter = require('./src/routes/teacher.routes');
+const paymentRoutes = require('./src/routes/paymentRoutes');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-// attach model to req
+// attach models to req
 app.use((req, res, next) => {
   req.studentModel = studentModel;
   req.userModel = userModel;
@@ -29,18 +28,15 @@ app.use((req, res, next) => {
   req.examModel = examModel;
   req.teacherModel = teacherModel;
   req.Payment = Payment;
-
-
-
   next();
 });
 
 app.use('/api/v1', studentRouter);
 app.use('/api/v1', authRouter);
-app.use('/api/v1',parentTesti)
-app.use('/api/v1',studentTestRouter)
-app.use('/api/v1',examRouter)
-app.use('/api/v1',teacherRouter)
+app.use('/api/v1', parentTesti);
+app.use('/api/v1', studentTestRouter);
+app.use('/api/v1', examRouter);
+app.use('/api/v1', teacherRouter);
 app.use('/api/v1', paymentRoutes);
 
 const PORT = process.env.PORT || 3000;

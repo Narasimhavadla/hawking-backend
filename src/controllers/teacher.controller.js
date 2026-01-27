@@ -48,8 +48,8 @@ const TeacherController = {
                 phone,
                 teachingType,
                 upiId,
-                classFrom,
-                classTo,
+                teachingFrom,
+                teachingTo,
               } = req.body;
 
 
@@ -61,8 +61,8 @@ const TeacherController = {
                 phone,
                 teachingType,
                 upiId,
-                teachingFrom: classFrom,
-                teachingTo: classTo,
+                teachingFrom: teachingFrom,
+                teachingTo: teachingTo,
                 role: "teacher",
               });
               // 2️⃣ Create User (Teacher Login)

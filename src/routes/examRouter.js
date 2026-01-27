@@ -6,6 +6,15 @@ const examScheduleController = require('../controllers/examController')
 
 
 // router.get('/exam-schedule/count',examScheduleController.getExamCount)
+router.get(
+  "/teacher/:teacherId/dashboard",
+  examScheduleController.getTeacherDashboardStats
+);
+
+router.get(
+  "/teacher/:teacherId/students-pie",
+  examScheduleController.getTeacherStudentsPie
+);
 
 
 router.get('/exam-schedule',examScheduleController.getExamSchedule)

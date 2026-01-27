@@ -1,5 +1,6 @@
 const express = require('express')
 const {catchError,notFoundErr} = require('../utils/errorHandler')
+const {Sequelize} = require('sequelize')
 
 
 
@@ -34,36 +35,6 @@ const examController = {
             catchError(res, err, "Failed to get Data");
         }
         },
-
-    
-        // getExamCount: async (req, res) => {
-        // try {
-        //     const examScheudle = await req.examModel.findAll();
-
-        //     const totalExams = examScheudle.length;
-
-        //     const activeExams = await req.examModel.count({
-        //     where: { status: "active" },
-        //     });
-
-        //     const inactiveExams = await req.examModel.count({
-        //     where: { status: "inactive" },
-        //     });
-
-        //     res.status(200).send({
-        //     status: true,
-        //     message: "Successfully fetched",
-        //     meta: {
-        //         total_examSchedule: totalExams,
-        //         activeExams,
-        //         inactiveExams,
-        //     },
-        //     });
-        // } catch (err) {
-        //     catchError(res, err, "Failed to get Data");
-        // }
-        // },
-
 
     //create exam schedule 
 
@@ -191,7 +162,112 @@ const examController = {
         catch(err){
             catchError(res,err,"Failed to delete !")
         }
+    },
+
+
+    getTeacherDashboardStats: async (req, res) => {
+    try {
+      const { teacherId } = req.params;
+
+      if (!teacherId) {
+        return res.status(400).send({
+          status: false,
+          message: "Teacher ID is required",
+        });
+      }
+
+      /* 1️⃣ Total students registered by this teacher */
+      const totalStudents = await req.studentModel.count({
+        where: { teacherId },
+      });
+
+      /* 2️⃣ Active exams count (global) */
+      const activeExams = await req.examModel.count({
+        where: { status: "active" },
+      });
+
+      /* 3️⃣ Distinct exams where this teacher registered students */
+      const examsWithStudents = await req.studentModel.count({
+        where: {
+          teacherId,
+          examId: {
+            [Sequelize.Op.ne]: null,
+          },
+        },
+        distinct: true,
+        col: "examId",
+      });
+
+      res.status(200).send({
+        status: true,
+        message: "Teacher dashboard data fetched successfully",
+        data: {
+          totalStudents,
+          activeExams,
+          examsWithStudents,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).send({
+        status: false,
+        message: "Failed to fetch teacher dashboard data",
+      });
     }
+  },
+
+ 
+  getTeacherStudentsPie: async (req, res) => {
+    try {
+      const teacherId = req.params.teacherId;
+
+      if (!teacherId) {
+        return res.status(400).send({
+          status: false,
+          message: "Teacher ID is required",
+        });
+      }
+
+      const result = await req.studentModel.findAll({
+        attributes: [
+          ["Class", "name"],
+          [Sequelize.fn("COUNT", Sequelize.col("id")), "value"],
+        ],
+        where: { teacherId: teacherId },
+        group: ["Class"],
+        raw: true,
+      });
+
+      // Define all possible classes (optional)
+      const allClasses = [
+        "Class-4",
+        "Class-5",
+        "Class-6",
+        "Class-7",
+        "Class-8",
+        "Class-9",
+      ];
+
+      const formattedData = allClasses.map((cls) => {
+        const found = result.find((r) => r.name === cls);
+        return {
+          name: cls,
+          value: found ? Number(found.value) : 0,
+        };
+      });
+
+      res.status(200).send({
+        status: true,
+        data: formattedData,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({
+        status: false,
+        message: "Failed to fetch pie chart data",
+      });
+    }
+  },
         
 } 
 
