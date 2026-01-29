@@ -7,6 +7,8 @@ const studentTestModel = require('../models/studentTestModel')
 const examModels = require('../models/exam')
 const teacherModels = require('./teacher.model')
 const paymentModel = require('./paymentModel');
+const teacherReferralModel = require("./teacherReferral.model");
+
 
 const studentModel = createUserModel(sequelize);
 const userModel = createUserModels(sequelize);
@@ -15,15 +17,38 @@ const stuTestModel = studentTestModel(sequelize)
 const examModel = examModels(sequelize)
 const teacherModel = teacherModels(sequelize)
 const Payment = paymentModel(sequelize)
+const TeacherReferral = teacherReferralModel(sequelize);
+
+TeacherReferral.belongsTo(teacherModel, {
+  foreignKey: "referrerTeacherId",
+  as: "referrer",
+});
+
+TeacherReferral.belongsTo(teacherModel, {
+  foreignKey: "referredTeacherId",
+  as: "referred",
+});
+
 
 
 
 const initDb = async () => {
-  await sequelize.authenticate();
-  console.log("✅ DB connected");
-  await sequelize.sync();
-  console.log("✅ Models synced");
+  try {
+    await sequelize.authenticate();
+    console.log("✅ DB connected");
+
+    if (process.env.NODE_ENV !== "production") {
+      await sequelize.sync({ alter: true });
+      console.log("🛠 DB synced (alter mode)");
+    } else {
+      await sequelize.sync();
+      console.log("✅ DB synced");
+    }
+  } catch (error) {
+    console.error("❌ DB connection failed:", error);
+  }
 };
+
 
 
 module.exports = {
@@ -35,5 +60,6 @@ module.exports = {
     examModel,
     teacherModel,
     Payment,
+    TeacherReferral,
 
 }

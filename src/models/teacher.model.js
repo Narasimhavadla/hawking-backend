@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 
+
 module.exports = (sequelize) => {
   const Teacher = sequelize.define(
     "Teacher",
@@ -60,6 +61,10 @@ module.exports = (sequelize) => {
       role :{
         type : DataTypes.STRING,
         allowNull : false
+      },
+      refferCode : {
+        type : DataTypes.STRING,
+        allowNull : true
       }
     },
     {

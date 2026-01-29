@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const userModel = require('../models/userModel')
-// const teacherModel = require('../models/teacher.model')
-const {sequelize} = require('sequelize')
+
 
 exports.register = async (req, res) => {
   try {
@@ -41,7 +39,7 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // 1. Find user
+    // 1️⃣ Find user
     const user = await req.userModel.findOne({
       where: { username },
     });
@@ -53,7 +51,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 2. Compare password
+    // 2️⃣ Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).send({
@@ -62,31 +60,32 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 3. Get teacherId ONLY if role = teacher
-    // let teacherId = null;
+    // 3️⃣ Fetch teacherId ONLY if role = teacher
+    let teacherId = null;
 
-    // if (user.role === "teacher") {
-    //   const teacher = await teacherModel.findOne({
-    //     where: { email }, 
-    //   });
+    if (user.role === "teacher") {
+      const teacher = await req.teacherModel.findOne({
+        where: { email: user.username },
+        attributes: ["id"], // 🔥 optimized
+      });
 
-    //   if (teacher) {
-    //     teacherId = teacher.id;
-    //   }
-    // }
+      if (teacher) {
+        teacherId = teacher.id;
+      }
+    }
 
-    // 4. Generate token
+    // 4️⃣ Generate JWT
     const token = jwt.sign(
       {
         id: user.id,
         role: user.role,
-        
+        teacherId,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // 5. Response
+    // 5️⃣ Response
     res.status(200).send({
       status: true,
       message: "Login successful",
@@ -94,16 +93,18 @@ exports.login = async (req, res) => {
       user: {
         id: user.id,
         username: user.username,
-        role: user.role
-        
+        role: user.role,
+        teacherId,
       },
     });
+
   } catch (err) {
-    console.error(err);
+    console.error("LOGIN ERROR 👉", err);
     res.status(500).send({
       status: false,
       message: "Login failed",
     });
   }
-}
+};
+
 
