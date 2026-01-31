@@ -9,7 +9,7 @@ const createExam = (sequelize) =>{
                 primaryKey : true,
                 autoIncrement : true
             },
-            name : {
+            examName : {
                 type : DataTypes.STRING,
                 allowNull : false,
                 

@@ -34,6 +34,7 @@ exports.verifyPayment = async (req, res) => {
       amount,
       teacherId,
       examId,
+      examName,
       discountApplied = 0,
     } = req.body;
 
@@ -71,6 +72,7 @@ exports.verifyPayment = async (req, res) => {
     const payment = await req.Payment.create({
       teacherId,
       examId,
+      examName,
       razorpay_order_id: orderId,
       razorpay_payment_id: paymentId,
       razorpay_signature: signature,
@@ -85,6 +87,7 @@ exports.verifyPayment = async (req, res) => {
       invoiceNo,
       teacherName: teacher.name,
       teacherEmail: teacher.email,
+      examName,
       razorpay_payment_id: paymentId,
       razorpay_order_id: orderId,
       amount,

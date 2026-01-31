@@ -19,6 +19,10 @@ const Payment = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      examName : {
+        type : DataTypes.STRING,
+        allowNull :false
+      },
 
       razorpay_order_id: {
         type: DataTypes.STRING,

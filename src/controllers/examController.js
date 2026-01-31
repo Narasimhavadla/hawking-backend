@@ -41,20 +41,20 @@ const examController = {
     createExamSchedule : async (req,res) =>{
         try{
 
-            const {name,year,status,lastRegistrationDate,onlineExamDate,onlineExamResultDate,
+            const {examName,year,status,lastRegistrationDate,onlineExamDate,onlineExamResultDate,
                 onlineLiveInterviewDate,finalResultDate,
                 amount,examFormat
 
             } = req.body
 
-            if(!name || !year || !status || !lastRegistrationDate || !amount) {
+            if(!examName || !year || !status || !lastRegistrationDate || !amount) {
                 return res.status(404).send({
                     status : false,
                     message : "Required fields are missing"
                 })
             }
 
-            const createExam = await req.examModel.create({name,year,status,lastRegistrationDate,
+            const createExam = await req.examModel.create({examName,year,status,lastRegistrationDate,
                 onlineExamDate,onlineExamResultDate,onlineLiveInterviewDate,finalResultDate,amount,
                 examFormat
             })
@@ -102,7 +102,7 @@ const examController = {
 
     updateExamSchedule : async (req,res) =>{
             try{
-                const {name,year,status,lastRegistrationDate,
+                const {examName,year,status,lastRegistrationDate,
                 onlineExamDate,onlineExamResultDate,onlineLiveInterviewDate,finalResultDate,amount,
                 examFormat} = req.body
                 const examSchedule = await req.examModel.findByPk(req.params.id)
@@ -112,7 +112,7 @@ const examController = {
                 }
 
                 const updateExamSched = await examSchedule.update({
-                    name : name ?? examSchedule.name,
+                    examName : examName ?? examSchedule.examName,
                     year : year ?? examSchedule.year,
                     status : status ?? examSchedule.status,
                     lastRegistrationDate : lastRegistrationDate ?? examSchedule.lastRegistrationDate,
