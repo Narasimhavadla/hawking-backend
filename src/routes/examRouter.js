@@ -2,26 +2,46 @@ const express = require('express')
 
 const router = express.Router()
 
-const examScheduleController = require('../controllers/examController')
+const examScheduleController = require('../controllers/examController');
+const { verifyToken } = require('../../middleware/auth.middleware');
+const { allowRoles } = require("../../middleware/roleMiddleware");
+
 
 
 // router.get('/exam-schedule/count',examScheduleController.getExamCount)
 router.get(
-  "/teacher/:teacherId/dashboard",
+  "/teacher/:teacherId/dashboard",verifyToken,
+  allowRoles("admin", "teacher","superadmin"),
+
   examScheduleController.getTeacherDashboardStats
 );
 
 router.get(
-  "/teacher/:teacherId/students-pie",
+  "/teacher/:teacherId/students-pie",verifyToken,
+  allowRoles("admin", "teacher","superadmin"),
   examScheduleController.getTeacherStudentsPie
 );
 
 
-router.get('/exam-schedule',examScheduleController.getExamSchedule)
-router.get('/exam-schedule/:id',examScheduleController.getExamScheduleById)
-router.post('/exam-schedule',examScheduleController.createExamSchedule)
-router.put('/exam-schedule/:id',examScheduleController.updateExamSchedule)
-router.delete('/exam-schedule/:id',examScheduleController.deleteExamSchedule)
+router.get('/exam-schedule',verifyToken,
+  allowRoles("admin", "teacher","superadmin"),
+  examScheduleController.getExamSchedule)
+
+router.get('/exam-schedule/:id',verifyToken,
+  allowRoles("admin", "teacher","superadmin"),
+  examScheduleController.getExamScheduleById)
+
+router.post('/exam-schedule',verifyToken,
+  allowRoles("admin", "superadmin"),
+  examScheduleController.createExamSchedule)
+
+router.put('/exam-schedule/:id',verifyToken,
+  allowRoles("admin", "superadmin"),
+  examScheduleController.updateExamSchedule)
+
+router.delete('/exam-schedule/:id',verifyToken,
+  allowRoles("admin", "superadmin"),
+  examScheduleController.deleteExamSchedule)
 
 // router.get("/testimonials/public", examScheduleController.getPublishedTestimonials);
 

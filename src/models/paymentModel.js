@@ -10,18 +10,26 @@ const Payment = (sequelize) => {
         autoIncrement: true,
       },
 
+      // 🔹 NEW (for student registration)
+      studentId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      // 🔹 EXISTING (teacher flow untouched)
       teacherId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true, // ⬅️ changed from false → true
       },
 
       examId: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      examName : {
-        type : DataTypes.STRING,
-        allowNull :false
+
+      examName: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
 
       razorpay_order_id: {
@@ -52,12 +60,16 @@ const Payment = (sequelize) => {
 
       discountApplied: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
         defaultValue: 0,
       },
 
       status: {
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      paymentFor: {
+        type: DataTypes.ENUM("TEACHER", "STUDENT"),
         allowNull: false,
       },
     },

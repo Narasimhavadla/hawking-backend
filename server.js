@@ -16,6 +16,7 @@ const examRouter = require('./src/routes/examRouter');
 const teacherRouter = require('./src/routes/teacher.routes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const referralRoutes = require("./src/routes/referral.routes");
+const studentPaymentRoutes = require("./src/routes/studentPaymentRoutes");
 
 
 const app = express();
@@ -44,6 +45,7 @@ app.use('/api/v1', examRouter);
 app.use('/api/v1', teacherRouter);
 app.use('/api/v1', paymentRoutes);
 app.use("/api/v1/referrals", referralRoutes);
+app.use("/api/v1", studentPaymentRoutes);
 
 const PORT = process.env.PORT || 3000;
 
