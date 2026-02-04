@@ -7,7 +7,8 @@ const ParentTestinoial = require("../controllers/parentTest");
 
 /* ---------- FIXED ROUTES FIRST ---------- */
 router.get(
-  "/parent-testinomials/published",verifyToken,
+  "/parent-testinomials/published",
+
   ParentTestinoial.getPublishedParentTestimonials
 );
 

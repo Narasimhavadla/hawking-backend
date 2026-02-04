@@ -35,6 +35,7 @@ exports.register = async (req, res) => {
 };
 
 
+
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -45,7 +46,7 @@ exports.login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).send({
+      return res.status(401).json({
         status: false,
         message: "Invalid credentials",
       });
@@ -54,39 +55,53 @@ exports.login = async (req, res) => {
     // 2️⃣ Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).send({
+      return res.status(401).json({
         status: false,
         message: "Invalid credentials",
       });
     }
 
-    // 3️⃣ Fetch teacherId ONLY if role = teacher
+    // 3️⃣ Teacher ID (optional)
     let teacherId = null;
-
     if (user.role === "teacher") {
       const teacher = await req.teacherModel.findOne({
         where: { email: user.username },
-        attributes: ["id"], // 🔥 optimized
+        attributes: ["id"],
       });
-
-      if (teacher) {
-        teacherId = teacher.id;
-      }
+      if (teacher) teacherId = teacher.id;
     }
 
-    // 4️⃣ Generate JWT
+    // 4️⃣ Create user activity
+    // const activity = await req.UserActivity.create({
+    //   userId: user.id,
+    //   username: user.username,
+    //   role: user.role,
+    //   loginTime: new Date(),
+    //   ipAddress: req.ip,
+    //   userAgent: req.headers["user-agent"],
+    // });
+    const activity = await req.UserActivity.create({
+      userId: user.id,
+      username: user.username,
+      role: user.role,
+      loginTime: new Date(),
+      status: "ACTIVE",
+    });
+
+    // 5️⃣ JWT with activityId
     const token = jwt.sign(
       {
         id: user.id,
         role: user.role,
         teacherId,
+        activityId: activity.id,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // 5️⃣ Response
-    res.status(200).send({
+    // 6️⃣ Response
+    res.json({
       status: true,
       message: "Login successful",
       token,
@@ -95,16 +110,17 @@ exports.login = async (req, res) => {
         username: user.username,
         role: user.role,
         teacherId,
+        activityId: activity.id,
       },
     });
-
   } catch (err) {
     console.error("LOGIN ERROR 👉", err);
-    res.status(500).send({
+    res.status(500).json({
       status: false,
       message: "Login failed",
     });
   }
 };
+
 
 

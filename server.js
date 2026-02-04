@@ -7,7 +7,7 @@ const cors = require('cors');
 dotenv.config();
 
 const studentRouter = require('./src/routes/studentsRouter');
-const { studentModel, initDb, userModel, parentTestModel, stuTestModel,examModel, teacherModel, Payment,TeacherReferral } = require('./src/models');
+const { studentModel, initDb, userModel, parentTestModel, stuTestModel,examModel, teacherModel, Payment,TeacherReferral,UserActivity } = require('./src/models');
 
 const authRouter = require('./src/routes/authRouter');
 const parentTesti = require('./src/routes/parentTestRouter');
@@ -17,6 +17,7 @@ const teacherRouter = require('./src/routes/teacher.routes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const referralRoutes = require("./src/routes/referral.routes");
 const studentPaymentRoutes = require("./src/routes/studentPaymentRoutes");
+const activityRoutes = require("./src/routes/activityRouter")
 
 
 const app = express();
@@ -34,7 +35,8 @@ app.use((req, res, next) => {
   req.teacherModel = teacherModel;
   req.Payment = Payment;
   req.teacherReferralModel =TeacherReferral;
-  next();
+  req.UserActivity = UserActivity;
+    next();
 });
 
 app.use('/api/v1', studentRouter);
@@ -46,6 +48,7 @@ app.use('/api/v1', teacherRouter);
 app.use('/api/v1', paymentRoutes);
 app.use("/api/v1/referrals", referralRoutes);
 app.use("/api/v1", studentPaymentRoutes);
+app.use("/api/v1/activity", activityRoutes);
 
 const PORT = process.env.PORT || 3000;
 

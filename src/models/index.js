@@ -8,6 +8,7 @@ const examModels = require('../models/exam')
 const teacherModels = require('./teacher.model')
 const paymentModel = require('./paymentModel');
 const teacherReferralModel = require("./teacherReferral.model");
+const createUserActivityModel = require("./userActivity.model")
 
 
 const studentModel = createUserModel(sequelize);
@@ -18,6 +19,7 @@ const examModel = examModels(sequelize)
 const teacherModel = teacherModels(sequelize)
 const Payment = paymentModel(sequelize)
 const TeacherReferral = teacherReferralModel(sequelize);
+const UserActivity = createUserActivityModel(sequelize);
 
 TeacherReferral.belongsTo(teacherModel, {
   foreignKey: "referrerTeacherId",
@@ -61,5 +63,6 @@ module.exports = {
     teacherModel,
     Payment,
     TeacherReferral,
+    UserActivity,
 
 }

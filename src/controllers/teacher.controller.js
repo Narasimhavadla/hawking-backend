@@ -205,30 +205,51 @@ createTeacher: async (req, res) => {
   },
 
   // ✅ DELETE
-  deleteTeacher: async (req, res) => {
-    try {
-      const deleted = await req.teacherModel.destroy({
-        where: { id: req.params.id },
-      });
+ deleteTeacher: async (req, res) => {
+  const transaction = await req.sequelize.transaction();
 
-      if (!deleted) {
-        return res.status(404).json({
-          status: false,
-          message: "Teacher not found",
-        });
-      }
+  try {
+    // 1️⃣ Find teacher
+    const teacher = await req.teacherModel.findByPk(req.params.id, {
+      transaction,
+    });
 
-      res.status(200).json({
-        status: true,
-        message: "Teacher deleted successfully",
-      });
-    } catch (error) {
-      res.status(500).json({
+    if (!teacher) {
+      await transaction.rollback();
+      return res.status(404).json({
         status: false,
-        message: error.message,
+        message: "Teacher not found",
       });
     }
-  },
+
+    // 2️⃣ Delete user linked to teacher (by email)
+    await req.userModel.destroy({
+      where: { username: teacher.email },
+      transaction,
+    });
+
+    // 3️⃣ Delete teacher
+    await req.teacherModel.destroy({
+      where: { id: teacher.id },
+      transaction,
+    });
+
+    await transaction.commit();
+
+    res.status(200).json({
+      status: true,
+      message: "Teacher and user deleted successfully",
+    });
+
+  } catch (error) {
+    await transaction.rollback();
+    res.status(500).json({
+      status: false,
+      message: error.message,
+    });
+  }
+},
+
 };
 
 module.exports = TeacherController;

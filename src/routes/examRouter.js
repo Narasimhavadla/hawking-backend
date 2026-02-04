@@ -11,8 +11,7 @@ const { allowRoles } = require("../../middleware/roleMiddleware");
 // router.get('/exam-schedule/count',examScheduleController.getExamCount)
 router.get(
   "/teacher/:teacherId/dashboard",verifyToken,
-  allowRoles("admin", "teacher","superadmin"),
-
+  allowRoles("admin","teacher","superadmin"),
   examScheduleController.getTeacherDashboardStats
 );
 

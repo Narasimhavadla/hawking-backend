@@ -35,7 +35,7 @@ const createStudent = (sequelize) => {
       },
       dob : {
         type : DataTypes.DATE,
-        allowNull : false
+        allowNull : true
       },
       institute : {
         type : DataTypes.STRING,
@@ -51,7 +51,7 @@ const createStudent = (sequelize) => {
       },
       pincode : {
         type : DataTypes.STRING,
-        allowNull : false
+        allowNull : true
       },
       Status : {
         type : DataTypes.STRING,
