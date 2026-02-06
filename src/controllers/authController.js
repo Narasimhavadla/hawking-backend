@@ -36,6 +36,7 @@ exports.register = async (req, res) => {
 
 
 
+
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -71,15 +72,6 @@ exports.login = async (req, res) => {
       if (teacher) teacherId = teacher.id;
     }
 
-    // 4️⃣ Create user activity
-    // const activity = await req.UserActivity.create({
-    //   userId: user.id,
-    //   username: user.username,
-    //   role: user.role,
-    //   loginTime: new Date(),
-    //   ipAddress: req.ip,
-    //   userAgent: req.headers["user-agent"],
-    // });
     const activity = await req.UserActivity.create({
       userId: user.id,
       username: user.username,

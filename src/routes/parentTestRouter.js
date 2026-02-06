@@ -13,11 +13,10 @@ router.get(
 );
 
 /* ---------- CRUD ROUTES ---------- */
-router.get("/parent-testinomials",verifyToken,
-  allowRoles("admin","superadmin"),
+router.get("/parent-testinomials",
   ParentTestinoial.getParentTestinomials);
 
-router.post("/parent-testinomials",verifyToken,
+router.post("/parent-testinomials",
   ParentTestinoial.createTestinomial);
 
 router.patch(
@@ -26,7 +25,9 @@ router.patch(
   ParentTestinoial.toggleParentTestimonialPublish
 );
 
-router.get("/parent-testinomials/:id",verifyToken, ParentTestinoial.getParentTestById);
+router.get("/parent-testinomials/:id",verifyToken,
+  allowRoles("admin","superadmin"),
+   ParentTestinoial.getParentTestById);
 
 router.put("/parent-testinomials/:id",verifyToken,
   allowRoles("admin","superadmin"),

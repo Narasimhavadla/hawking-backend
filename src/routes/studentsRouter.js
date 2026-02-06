@@ -50,7 +50,7 @@ router.get("/dashboard-data", verifyToken,
 router.post(
   "/student/bulk",
   verifyToken,
-  allowRoles("admin", "teacher"),
+  allowRoles("admin", "teacher","superadmin"),
   studentController.createStudentsBulk
 );
 
@@ -61,21 +61,21 @@ router.get("/student/:id", verifyToken, studentController.getStudent);
 router.post(
   "/student",
   verifyToken,
-  allowRoles("admin", "teacher"),
+  allowRoles("admin", "teacher","superadmin"),
   studentController.createStudents
 );
 
 router.put(
   "/student/:id",
   verifyToken,
-  allowRoles("admin", "teacher"),
+  allowRoles("admin", "teacher","superadmin"),
   studentController.updateStudent
 );
 
 router.delete(
   "/student/:id",
   verifyToken,
-  allowRoles("admin"),
+  allowRoles("admin","superadmin"),
   studentController.deleteStudent
 );
 

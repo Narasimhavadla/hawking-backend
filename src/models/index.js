@@ -9,6 +9,10 @@ const teacherModels = require('./teacher.model')
 const paymentModel = require('./paymentModel');
 const teacherReferralModel = require("./teacherReferral.model");
 const createUserActivityModel = require("./userActivity.model")
+const createBooks = require("./books.model");
+const createBookOrder = require("./booksOrder")
+
+
 
 
 const studentModel = createUserModel(sequelize);
@@ -20,6 +24,10 @@ const teacherModel = teacherModels(sequelize)
 const Payment = paymentModel(sequelize)
 const TeacherReferral = teacherReferralModel(sequelize);
 const UserActivity = createUserActivityModel(sequelize);
+const booksModel = createBooks(sequelize);
+const booksOrderModel = createBookOrder(sequelize);
+
+
 
 TeacherReferral.belongsTo(teacherModel, {
   foreignKey: "referrerTeacherId",
@@ -30,6 +38,60 @@ TeacherReferral.belongsTo(teacherModel, {
   foreignKey: "referredTeacherId",
   as: "referred",
 });
+
+// // Payment relations
+// Payment.belongsTo(teacherModel, { foreignKey: "id" });
+// teacherModel.hasMany(Payment, { foreignKey: "teacherId" });
+
+// Payment.belongsTo(examModel, { foreignKey: "examId" });
+// examModel.hasMany(Payment, { foreignKey: "examId" });
+
+// Payment.belongsTo(studentModel, { foreignKey: "id" });
+// studentModel.hasMany(Payment, { foreignKey: "studentId" });
+
+// ================= PAYMENT RELATIONS ================= //
+
+// Teacher ↔ Payment
+Payment.belongsTo(teacherModel, {
+  foreignKey: "teacherId",
+  as: "teacher",
+});
+
+teacherModel.hasMany(Payment, {
+  foreignKey: "teacherId",
+  as: "payments",
+});
+
+// Student ↔ Payment
+Payment.belongsTo(studentModel, {
+  foreignKey: "studentId",
+  as: "student",
+});
+
+studentModel.hasMany(Payment, {
+  foreignKey: "studentId",
+  as: "payments",
+});
+
+// Exam ↔ Payment
+Payment.belongsTo(examModel, {
+  foreignKey: "examId",
+  as: "exam",
+});
+
+examModel.hasMany(Payment, {
+  foreignKey: "examId",
+  as: "payments",
+});
+
+
+// BooksOrders -> Book
+booksOrderModel.belongsTo(booksModel, {
+  foreignKey: "bookId",
+});
+
+
+
 
 
 
@@ -64,5 +126,7 @@ module.exports = {
     Payment,
     TeacherReferral,
     UserActivity,
+    booksModel,
+    booksOrderModel
 
 }
