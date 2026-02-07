@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const path = require("path");
+// const path = require("path");
 
 
 //REF-A9X2QZ
@@ -31,10 +31,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "src/uploads"))
-);
+// app.use(
+//   "/uploads",
+//   express.static(path.join(__dirname, "src/uploads"))
+// );
 
 // attach models to req
 app.use((req, res, next) => {

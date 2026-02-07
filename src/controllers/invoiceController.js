@@ -1,16 +1,16 @@
-const path = require("path");
+// const path = require("path");
 
-exports.downloadInvoice = async (req, res) => {
-  const { invoiceNo } = req.params;
+// exports.downloadInvoice = async (req, res) => {
+//   const { invoiceNo } = req.params;
 
-  const filePath = path.join(
-    __dirname,
-    "../invoices",
-    `${invoiceNo}.pdf`
-  );
+//   const filePath = path.join(
+//     __dirname,
+//     "../invoices",
+//     `${invoiceNo}.pdf`
+//   );
 
-  res.download(filePath);
-};
+//   res.download(filePath);
+// };
 
 
 

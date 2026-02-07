@@ -337,7 +337,8 @@ createStudentsBulk: async (req, res) => {
   const transaction = await req.studentModel.sequelize.transaction();
 
   try {
-    const { examId, teacherId, students } = req.body;
+const { examId, students } = req.body;
+const teacherId = req.user.teacherId; // ✅ from token
 
     if (!examId) {
       return res.status(400).send({
@@ -380,7 +381,7 @@ createStudentsBulk: async (req, res) => {
         continue;
       }
 
-      validatedStudents.push({
+     validatedStudents.push({
         Class: s.Class,
         name: s.name,
         fathername: s.fathername,
@@ -391,11 +392,12 @@ createStudentsBulk: async (req, res) => {
         institute: s.institute,
         state: s.state,
         city: s.city,
-        pincode: Number(s.pincode), // ✅ FIX
-        Status: s.Status || "pending",
-        examId: examId,
-        teacherId: teacherId || null, // ✅ SAFE
+        pincode: String(s.pincode),
+        Status: "paid",
+        examId,
+        teacherId, // ✅ FROM JWT
       });
+
     }
 
     if (errors.length > 0) {
