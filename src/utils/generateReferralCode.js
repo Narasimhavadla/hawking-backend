@@ -1,3 +1,3 @@
 exports.generateReferralCode = () => {
-  return "REF-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+  return "HAW-REF-" + Math.random().toString(36).substring(2, 6).toUpperCase();
 };

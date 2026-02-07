@@ -9,7 +9,7 @@ const path = require("path");
 dotenv.config();
 
 const studentRouter = require('./src/routes/studentsRouter');
-const { studentModel, initDb, userModel, parentTestModel, stuTestModel,examModel, teacherModel, Payment,TeacherReferral,UserActivity,booksModel,booksOrderModel } = require('./src/models');
+const { studentModel, initDb, userModel, parentTestModel, stuTestModel,examModel, teacherModel, Payment,TeacherReferral,UserActivity,booksModel,booksOrderModel,wallPostModel } = require('./src/models');
 
 const authRouter = require('./src/routes/authRouter');
 const parentTesti = require('./src/routes/parentTestRouter');
@@ -23,6 +23,7 @@ const activityRoutes = require("./src/routes/activityRouter")
 const paymentDashboardRoutes = require("./src/routes/paymentDashboardRoutes")
 const booksRouter = require("./src/routes/booksRouter");
 const booksOrderRouter = require("./src/routes/booksOrderRouter")
+const wallPostsRouter = require("./src/routes/wallPosrRouter")
 
 
 const app = express();
@@ -47,7 +48,8 @@ app.use((req, res, next) => {
   req.teacherReferralModel =TeacherReferral;
   req.UserActivity = UserActivity;
   req.booksModel = booksModel;
-  req.booksOrderModel = booksOrderModel
+  req.booksOrderModel = booksOrderModel;
+  req.wallPostModel = wallPostModel;
 
     next();
 });
@@ -65,6 +67,7 @@ app.use("/api/v1", studentPaymentRoutes);
 app.use("/api/v1/activity", activityRoutes);
 app.use("/api/v1", booksRouter);
 app.use("/api/v1/orders", booksOrderRouter);
+app.use("/api/v1/", wallPostsRouter);
 
 
 

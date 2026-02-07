@@ -11,6 +11,7 @@ const teacherReferralModel = require("./teacherReferral.model");
 const createUserActivityModel = require("./userActivity.model")
 const createBooks = require("./books.model");
 const createBookOrder = require("./booksOrder")
+const createWallPost = require("./wallPost.modal")
 
 
 
@@ -26,6 +27,7 @@ const TeacherReferral = teacherReferralModel(sequelize);
 const UserActivity = createUserActivityModel(sequelize);
 const booksModel = createBooks(sequelize);
 const booksOrderModel = createBookOrder(sequelize);
+const wallPostModel = createWallPost(sequelize);
 
 
 
@@ -127,6 +129,7 @@ module.exports = {
     TeacherReferral,
     UserActivity,
     booksModel,
-    booksOrderModel
+    booksOrderModel,
+    wallPostModel
 
 }

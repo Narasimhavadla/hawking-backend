@@ -1,9 +1,30 @@
+const jwt = require("jsonwebtoken");
+
 exports.logout = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    let userId;
+
+    /* ===== TOKEN FROM HEADER ===== */
+    const authHeader = req.headers.authorization;
+
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      userId = decoded.id;
+    }
+
+    /* ===== TOKEN FROM BODY (Beacon fallback) ===== */
+    if (!userId && req.body.token) {
+      const decoded = jwt.verify(
+        req.body.token,
+        process.env.JWT_SECRET
+      );
+      userId = decoded.id;
+    }
+
     const { activityId } = req.body;
 
-    if (!activityId) {
+    if (!activityId || !userId) {
       return res.status(400).json({
         status: false,
         message: "Activity ID required",
@@ -19,9 +40,9 @@ exports.logout = async (req, res) => {
     });
 
     if (!activity) {
-      return res.status(400).json({
-        status: false,
-        message: "Session already closed or not found",
+      return res.json({
+        status: true,
+        message: "Already logged out",
       });
     }
 
@@ -48,6 +69,7 @@ exports.logout = async (req, res) => {
     });
   }
 };
+
 
 
 exports.getUserActivities = async (req, res) => {
